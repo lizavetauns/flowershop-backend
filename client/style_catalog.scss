@@ -1,0 +1,339 @@
+#content{
+    height: 1450px;
+    padding-left: 30px;
+}
+.fix {
+    width: 970px;
+}
+#left{
+    width: 250px;
+    position: absolute;
+}
+#right{
+    width: 690px;
+    float:right;
+    margin-right: 30px;
+}
+.block{
+    height: 320px;
+    width: 164px;
+    padding-top: 5px;
+    padding-left: 5px;
+}
+.card{
+    height: 315px;
+    width: 160px;
+}
+.button{
+    margin-bottom: 10px;
+}
+button{
+    width: 100px;
+}
+.opis{
+    text-align: center;
+    font-size: 10pt;
+    color:rgb(133, 133, 133);
+    height:65px; 
+}
+.image{
+    padding-left: 5px;
+}
+.str{
+    height: 50px;
+    width: 690px;
+    text-align: center;
+    
+}
+a{
+    color:rgb(76, 121, 206);
+}
+.pg{
+    height: 25px;
+    width: 25px;
+    margin-left: 3px;
+}
+#str2{
+    margin-top: 10px;
+    float: left;
+}
+#rightstr{
+    width: 730px;
+    float:right;
+}
+#price{
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+.pricem{
+    border: 1px #ddd solid;
+    background: #f8f8f8;
+    padding: 0 6px;   
+    min-height: 24px;
+    outline: 0;
+    width: 35%;
+}
+.t-checkbox__indicator{
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    height: 20px;
+    width: 20px;
+    border: 2px solid #000;
+    box-sizing: border-box;
+    transition: all .2s;
+    opacity: .6;
+}
+.typeFilter{
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.checkbox{
+    box-sizing: content-box;
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+}
+.title{
+    font-size: 11pt;
+}
+label{
+    display: block;
+    position: relative;
+    cursor: pointer;
+    margin-bottom: 5px;
+    text-align: left;
+    color: inherit;
+}
+.t-checkbox__indicator:after {
+    content: '';
+    position: absolute;
+    display: none;
+    left: 6px;
+    top: 2px;
+    width: 3px;
+    height: 8px;
+    border: solid #000;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 1;
+}
+:after{
+    box-sizing: content-box;
+}
+label .checkbox:checked~.t-checkbox__indicator:after {
+    display: block;
+}
+label .checkbox:checked~.t-checkbox__indicator {
+    opacity: 1;
+}
+
+
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.33); /* Небольшое затемнение на фоне */
+    z-index: 1000; /* Поверх всех окон */
+    width: 100%;
+    height: 100%;
+    display: none; /* По умолчанию скрываем окно */
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    overflow-y: scroll;
+  }
+  
+  /* Стилизация контейнера окна */
+  .popup__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Распределяем элементы внутри равномерно */
+    width: 100%;
+    max-width: 800px;
+    min-height: 300px;
+    background-color: #fff;
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    position: relative;
+  }
+  
+  /* Элементы окна (заголовок, список товаров, вывод стоимости) */
+  .popup__item {
+    border-bottom: 1px solid #ddd;
+    padding: 20px;
+  }
+  
+  .popup__item:last-of-type {
+    border-bottom: none;
+  }
+  
+  .popup__title {
+    font-size: 20px;
+  }
+  
+  /* Стили для вывода товара */
+  .popup__product {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .popup__product-wrap {
+    display: flex;
+    align-items: center;
+  }
+  
+  .popup__product-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-right: 10px;
+  }
+  
+  .popup__product-title {
+    max-width: 300px;
+    font-weight: 500;
+  }
+  
+  .popup__product-price {
+    font-size: 18px;
+    margin-right: 15px;
+  }
+  
+  /* Стили для кнопки удаления товара */
+  .popup__product-delete {
+    font-size: 12px;
+    padding: 5px;
+    border: 0;
+    cursor: pointer;
+    color: #d62240;
+   
+    width: 50px;
+  }
+  .popup__product-delete:hover{
+    background-color:#fff;
+    color:#ca758e;
+}
+
+  
+  /* Стили для вывода стоимости товаров */
+  .popup__cost {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 5px;
+  }
+  
+  .popup__cost-title {
+    margin-right: 15px;
+    font-size: 20px;
+    text-align: right;
+  }
+  
+  .popup__cost-value {
+    font-size: 20px;
+  }
+  
+  /* Стили для кнопки закрытия окна */
+  .popup__close {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    right: 0;
+    padding: 20px;
+    font-size: 20px;
+    border: 0;
+  }
+  
+  .popup__close:hover {
+    color: rgb(54, 67, 100);
+    background-color: #fff;
+  }
+  
+  .popup--open {
+    display: flex;
+  }
+
+
+  .cart {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #ca758e;
+    transition: 0.1s;
+    cursor: pointer;
+    position: fixed; /* Фиксированное расположение */
+    top: 50px; /* в правом верхнем углу */
+    right: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    object-fit: contain;
+    padding: 15px;
+  }
+  
+  /* Увеличиваем кнопку при наведении на нее */
+  .cart:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Стилизуем счетчик товаров */
+  .cart__num {
+    position: absolute;
+    background-color: #d62240;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    top: -5px;
+    right: -5px;
+  }
+
+  .price::after {
+    content: "₽";
+    margin-left: 4px;
+    position: relative;
+  }
+
+  #oform{
+    width: 170px;
+    height: 40px;
+    margin-top: 30px;
+    margin-left: 31px;
+    font-size: 14pt;
+    border-color: rgb(250, 61, 112);
+    background-color: rgb(250, 61, 112);
+    color: #FFFFFF;
+  }
+  .headRL2{
+    position: absolute;
+    width: 470px;
+    height: 300px; 
+}
+.vvod{
+    width: 300px;
+    height: 30px;
+    font-size: 14pt;
+    background-color: rgb(246, 236, 236);
+    border-color: #bb8696;
+}
+.pole{
+    margin-left: 29px;
+    font-size: 10pt;    
+}
+#form{
+  width: 940px;
+  height: 250px;
+}

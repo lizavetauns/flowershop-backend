@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Цветочный магазин. Каталог</title>
+        <link rel="stylesheet" href="style_main.css">
+        <link rel="stylesheet" href="style_sbor.css">
+        <link rel="stylesheet" href="style_catalog.css">
+
+        <script>
+            function abnov(npage,limit){
+                document.getElementById('right').innerHTML = "";
+                if(document.getElementById('ob').checked || document.getElementById('ot').checked ||
+                document.getElementById('sv').checked || document.getElementById('lt').checked
+                )
+                {
+                if(document.getElementById('ob').checked)
+                {
+                    func(npage,limit,4)
+                }
+                if(document.getElementById('ot').checked)
+                {
+                    func(npage,limit,5)
+                }
+                if(document.getElementById('sv').checked)
+                {
+                    func(npage,limit,6)
+                }
+                if(document.getElementById('lt').checked)
+                {
+                    func(npage,limit,7)
+                }
+            }
+            else{
+                func(npage,limit);}
+                setTimeout(dd, 1000);
+               
+            }
+            function filtrtype(){
+                document.getElementById('str1').innerHTML="";
+                document.getElementById('str2').innerHTML="";
+                if(document.getElementById('ob').checked || document.getElementById('ot').checked ||
+                    document.getElementById('sv').checked || document.getElementById('lt').checked)
+                    {
+                        document.getElementById('right').innerHTML = "";  
+                        if(document.getElementById('ob').checked)
+                        {
+                            func(1,16,4)
+                        }
+                        if(document.getElementById('ot').checked)
+                        {
+                            func(1,16,5)
+                        }
+                        if(document.getElementById('sv').checked)
+                        {
+                            func(1,16,6)
+                        }
+                        if(document.getElementById('lt').checked)
+                        {
+                            func(1,16,7)
+                        }
+                    }
+                else{
+                        abnov(1,16)
+                    }
+            }
+
+            function func(npage,limit,type) 
+            { 
+                url = 'http://localhost:5000/api/product'+ '?page='+npage;
+                if(limit){
+                    url=url+'&limit='+limit
+                }
+                if(type){
+                    url=url+'&typeProductId='+type
+                }
+                count=0;
+               devs = document.getElementsByClassName('block').length;
+                fetch(url,
+                {
+                    method: 'get'
+                })
+                .then(response => response.json())
+                .then(product =>{
+                    product.rows.forEach(({id, name, price,about,quantity,img})=>{
+                    imgs='../server/static/'+img;
+                    document.getElementById('right').innerHTML+=
+                    `
+                    <div class="block"> 
+                        <div class="card">
+                            <img src="${imgs}" class="image" width="150" height="150" alt="flower">
+                            <div class = "name">${name} </div>
+                            <div class = "price">${price}</div>
+                            <div class="opis">${about}</div>
+                            <div class="button">
+                                    <button class="card__add">В корзину</button>
+                            </div>
+                        </div>
+                    </div>
+                    `
+                    })
+                    count= Math.ceil((devs+product.count)/limit);
+                        for(let i = 1; i<=count; i++)
+                        {
+                            document.getElementById('str1').innerHTML+=`<button class="pg" onclick="abnov(${i})">${i}</button>`
+                            document.getElementById('str2').innerHTML+=`<button class="pg" onclick="abnov(${i})">${i}</button>`                         
+                        }
+                        if(document.getElementsByClassName('pg')[0].textContent==document.getElementsByClassName('pg')[1].textContent){
+                            document.getElementById('str1').getElementsByClassName('pg')[1].remove();
+                            document.getElementById('str2').getElementsByClassName('pg')[1].remove();
+                        }
+                    }
+                );
+                
+            }
+            func(1,16);
+
+            
+          
+            function dd(){      
+function toNum(str) {
+    const num = Number(str.replace(/ /g, ""));
+    return num;
+  }
+  
+  function toCurrency(num) {
+    const format = new Intl.NumberFormat("ru-RU", {
+      style: "currency",
+      currency: "RUB",
+      minimumFractionDigits: 0,
+    }).format(num);
+    return format;
+  }
+
+ 
+  const cardAddArr = Array.from(document.querySelectorAll(".card__add"));
+  const cartNum = document.querySelector("#cart_num");
+  const cart = document.querySelector("#cart");
+  
+  class Cart {
+    products;
+    constructor() {
+      this.products = [];
+    }
+    get count() {
+      return this.products.length;
+    }
+    addProduct(product) {
+      this.products.push(product);
+    }
+    removeProduct(index) {
+      this.products.splice(index, 1);
+    }
+    get cost() {
+      const prices = this.products.map((product) => {
+        return toNum(product.price);
+      });
+      const sum = prices.reduce((acc, num) => {
+        return acc + num;
+      }, 0);
+      return sum;
+    }
+  }
+  
+  class Product {
+    img;
+    name;
+    price;
+    constructor(card) {
+      this.img = card.children[0].src;
+      this.name = card.querySelector(".name").textContent;
+      this.price = card.querySelector(".price").textContent;
+    }
+  }
+  
+  const myCart = new Cart();
+
+  if (localStorage.getItem("cart") == null) {
+    localStorage.setItem("cart", JSON.stringify(myCart));
+  }
+  
+  const savedCart = JSON.parse(localStorage.getItem("cart"));
+  myCart.products = savedCart.products;
+  cartNum.textContent = myCart.count;
+
+  myCart.products = cardAddArr.forEach((cardAdd) => {
+    cardAdd.addEventListener("click", (e) => {
+      e.preventDefault();
+      const card = e.target.closest(".card");
+      const product = new Product(card);
+      const savedCart = JSON.parse(localStorage.getItem("cart"));
+      myCart.products = savedCart.products;
+      myCart.addProduct(product);
+      localStorage.setItem("cart", JSON.stringify(myCart));
+      cartNum.textContent = myCart.count;
+    });
+  });
+
+
+
+  const popup = document.querySelector(".popup");
+  const popupClose = document.querySelector("#popup_close");
+  const body = document.body;
+  const popupContainer = document.querySelector("#popup_container");
+  const popupProductList = document.querySelector("#popup_product_list");
+  const popupCost = document.querySelector("#popup_cost");
+  
+  cart.addEventListener("click", (e) => {
+    e.preventDefault();
+    popup.classList.add("popup--open");
+    body.classList.add("lock");
+    popupContainerFill();
+  });
+  
+  function popupContainerFill() {
+    popupProductList.innerHTML = null;
+    const savedCart = JSON.parse(localStorage.getItem("cart"));
+    myCart.products = savedCart.products;
+    const productsHTML = myCart.products.map((product) => {
+      const productItem = document.createElement("div");
+      productItem.classList.add("popup__product");
+  
+      const productWrap1 = document.createElement("div");
+      productWrap1.classList.add("popup__product-wrap");
+      const productWrap2 = document.createElement("div");
+      productWrap2.classList.add("popup__product-wrap");
+  
+      const productImage = document.createElement("img");
+      productImage.classList.add("popup__product-image");
+      productImage.setAttribute("src", product.img);
+  
+      const productTitle = document.createElement("h2");
+      productTitle.classList.add("popup__product-title");
+      productTitle.innerHTML = product.name;
+  
+      const productPrice = document.createElement("div");
+      productPrice.classList.add("popup__product-price");
+      productPrice.innerHTML = toCurrency(toNum(product.price));
+  
+      const productDelete = document.createElement("button");
+      productDelete.classList.add("popup__product-delete");
+      productDelete.innerHTML = "&#10006;";
+  
+      productDelete.addEventListener("click", () => {
+        myCart.removeProduct(product);
+        localStorage.setItem("cart", JSON.stringify(myCart));
+        popupContainerFill();
+      });
+  
+      productWrap1.appendChild(productImage);
+      productWrap1.appendChild(productTitle);
+      productWrap2.appendChild(productPrice);
+      productWrap2.appendChild(productDelete);
+      productItem.appendChild(productWrap1);
+      productItem.appendChild(productWrap2);
+  
+      return productItem;
+    });
+
+    productsHTML.forEach((productHTML) => {
+      popupProductList.appendChild(productHTML);
+    });
+  
+    popupCost.value = toCurrency(myCart.cost);  
+  }
+
+
+  popupClose.addEventListener("click", (e) => {
+    e.preventDefault();
+    popup.classList.remove("popup--open");
+    body.classList.remove("lock");
+  });}
+  setTimeout(dd, 1000);
+
+
+            function Addorder(){
+              const items = document.getElementsByClassName('popup__product');
+              const fio1= document.getElementById('fio').value
+              const email1= document.getElementById("email").value
+              const numph= document.getElementById("numph").value
+              const dateend= document.getElementById("date").value
+              const date = new Date();
+              const sump= document.getElementById("popup_cost").value.slice(0, -2)
+              s = Number.parseInt(sump.slice(0,-4)+'000')
+              s1= Number.parseInt(sump.slice(-4))
+              const sump1= s+s1
+                fetch('http://localhost:5000/api/user',
+                {
+                    method: 'post',
+                    body: JSON.stringify({fio: fio1, num_phone: numph, email: email1, password: 'pass'}),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"}                    
+                })
+                .then(response => response.json())
+                .then(user =>{
+                      fetch('http://localhost:5000/api/order',
+                    {
+                        method: 'post',
+                        body: JSON.stringify({date_start: date, date_end_plan: dateend, sum_price: sump1, status: "Создан", userId: user.id}),
+                        headers: {
+                            "Content-type": "application/json; charset=UTF-8"}                    
+                    })
+                    .then(response => response.json())
+                    .then(order =>{
+                      
+                      const ordid = order.id
+                      
+                      for (var i=0, max=items.length; i < max; i++) {
+                      
+                      const nm = items[i].querySelector('.popup__product-title').textContent;                    
+                      const urll = 'http://localhost:5000/api/product/'+nm;
+                          fetch(urll,
+                          {
+                              method: 'get'                    
+                          })
+                          .then(response => response.json())
+                          .then(product => {
+                            const prid=product.id;
+                            alert('order'+ordid)
+                            fetch('http://localhost:5000/api/product_in_order',
+                              {
+                                  method: 'post',
+                                  body: JSON.stringify({quantity: 1, orderId: ordid, productId: prid}),
+                                  headers: {
+                                      "Content-type": "application/json; charset=UTF-8"}                    
+                              })
+                              .then(response => response.json())
+                              .then(product_in_order => 
+                              alert ('Заказ принят! Спасибо за доверие')
+                              
+                              )
+                            })
+}
+                     
+                    })
+
+                })
+                
+              
+            }
+
+            
+         </script>
+        
+
+    </head> 
+    <body bgcolor= "#faf2f2">
+        <div id="header" class="background"> 
+            <div id="header1" class="fix">
+                <div id="headverh">                   
+                    <div class="headRL">
+                        <div id="contacts" class = "text"> г. Иркутск
+                        ул. Уличная, 99
+                        +7 (999) 999-99-00</div>
+                    </div>
+                    <div id="headright" class="headRL" >
+                        <button class="cart" id="cart" class="corsina">
+                            <img class="cart__image" src="image/corsine.svg" alt="Cart" id="corsine" width="50" height="35" alt="LOGO"/>
+                            <div class = "text" class="cart__num" id="cart_num">0</div>
+                        </button>
+                    </div>
+                   <div class = "text"> <a href="Fsite.html" ><img src="image/logo.jpg" class="logo" width="210" height="60" alt="LOGO"> </a></div> 
+                </div>
+                <div id="headniz">
+                    <div id="navigation" class = "text"><a href="catalog.html" >КАТАЛОГ</a> <a href="sbor.html" class = "pad">СОБРАТЬ БУКЕТ</a> <a href="About.html" class = "pad">О НАС</a></div>        
+                </div> 
+            </div>            
+        </div>
+
+        <div id="content" class="fix">
+            
+            <div id="left">
+                <div class="typeFilter">Цена</div>
+                <div id="price">        
+                    <input class="pricem" type="text" name="price:min" data-min-val="500" value="500" data-previousmin="500">&nbsp;—&nbsp;
+                    <input class="pricem" type="text" name="price:max" data-max-val="55000" value="55 000" data-previousmax="55000">
+                </div>
+                
+                <div>    
+                    <div class="typeFilter" data-filter-label="прочие">Прочие товары</div>    
+                    <div>       
+                         <div data-type="checkbox">                  
+                            <label>
+                                <input id="ob" class="checkbox" type="checkbox" name="Обертка" data-filter-value="Обертка" onclick="filtrtype()">
+                                <div class="t-checkbox__indicator">
+                                    
+                                </div>
+                                <span class="title">Обертка</span>
+                            </label>
+                            <label>
+                                <input id="ot" class="checkbox" type="checkbox" name="Открытки" data-filter-value="Открытки" onclick="filtrtype()">
+                                <div class="t-checkbox__indicator">
+                                    
+                                </div>
+                                <span class="title">Открытки</span>
+                            </label>
+                            <label>
+                                <input id="sv" class="checkbox" type="checkbox" name="Сувениры" data-filter-value="Сувениры" onclick="filtrtype()">
+                                <div class="t-checkbox__indicator">
+                                    
+                                </div>
+                                <span class="title">Сувениры</span>
+                            </label>
+                            <label>
+                                <input id="lt"  class="checkbox" type="checkbox" name="Ленты" data-filter-value="Ленты" onclick="filtrtype()">
+                                <div class="t-checkbox__indicator">
+                                    
+                                </div>
+                                <span class="title">Ленты</span>
+                            </label>
+                        </div>    
+                    </div>
+                </div>
+            </div> 
+            <div id="rightstr"> 
+                <div id='str1' class="str">
+                   
+                </div>
+            <div id="right">
+                
+            </div>
+            <div id="str2" class="str"></div>
+            </div> 
+        </div>
+
+        <div class="background">
+            <div id="basement1" class="fix">
+                <img src="image/logo.jpg" class="logo" width="210" height="60" alt="LOGO">
+                <div id="contacts2" class = "text"> г. Иркутск
+                    ул. Уличная, 99
+                    +7 (999) 999-99-00</div>
+            </div>
+        </div>
+
+        <div class="popup">
+            <div class="popup__container" id="popup_container">
+              <div class="popup__item">
+                <h1 class="popup__title">Оформление заказа</h1>
+              </div>
+              <div class="popup__item" id="popup_product_list">
+                <div class="popup__product">
+                  <div class="popup__product-wrap">
+                    <img
+                      
+                      alt="Buket"
+                      class="popup__product-image"
+                    />
+                    <h2 class="popup__product-title">
+                      Букет красивый
+                    </h2>
+                  </div>
+                  <div class="popup__product-wrap">
+                    <div class="popup__product-price">15000</div>
+                    <button class="popup__product-delete">✖</button>
+                  </div>
+                </div>
+              </div>
+              <div class="popup__item">
+                <div class="popup__cost">
+                  <h2 class="popup__cost-title">Итого</h2>
+                  <output class="popup__cost-value" id="popup_cost">15000</output>
+                </div>
+              </div>
+              <button class="popup__close" id="popup_close">✖</button>
+
+
+
+              <div id="form">
+                <div class="headRL2">
+                    <div class="pole" > <p>ФИО</p> 
+                        <input type="text"id="fio" class="vvod">
+                    </div>
+                    <div class="pole" > <p>Почта</p> 
+                        <input type="text"id="email" class="vvod">
+                    </div>
+                    <button id="oform" onclick="Addorder()">Оформить заказ</button>
+                </div>
+                <div id="headright" class="headRL2" >
+                    <div class="pole" > <p>Номер телефона</p> 
+                        <input type="text"id="numph" class="vvod">
+                    </div>
+                    <div class="pole" > <p>Дата</p> 
+                        <input type="date"id="date" class="vvod" >
+                    </div>
+                </div>
+            </div>
+            </div>
+          </div>
+          
+    </body>
+</html>
